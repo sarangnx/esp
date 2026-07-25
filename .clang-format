@@ -1,0 +1,48 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+Standard: c++17
+
+# Custom Indentation
+IndentWidth: 2
+ColumnLimit: 100
+
+# Function and Method Declaration
+BinPackParameters: false
+BinPackArguments: false
+BreakConstructorInitializers: BeforeColon
+BreakInheritanceList: BeforeColon
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+ConstructorInitializerIndentWidth: 4
+
+# Alignment
+PointerAlignment: Left
+ReferenceAlignment: Pointer
+AccessModifierOffset: -4
+AlignTrailingComments: true
+
+# Spacing
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeRangeBasedForLoopColon: true
+SpacesBeforeTrailingComments: 2
+
+# Control Flow
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+
+# Includes and Namespaces
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '^".*"'
+    Priority: 1
+  - Regex: "^<esp.*>"
+    Priority: 2
+  - Regex: "^<.*>"
+    Priority: 3
+SortIncludes: true
+SortUsingDeclarations: true
+NamespaceIndentation: All
