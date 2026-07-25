@@ -49,3 +49,14 @@ The script provides an interactive menu where you can:
 - **Select** by pressing `Enter`
 
 Once a project is selected, symlinks at the root directory (`main` and `CMakeLists.txt`) will automatically point to that project's files. This allows ESP-IDF tools to build and flash the selected project.
+
+# Dependencies
+
+Dependencies can be found in [components.espressif.com](https://components.espressif.com/).
+
+### Installing dependencies
+
+```bash
+# add a single dependency
+idf.py add-dependency "lvgl/lvgl^9.5.0"
+```

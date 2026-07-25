@@ -4,3 +4,4 @@ sdkconfig
 
 /main
 /CMakeLists.txt
+managed_components/
