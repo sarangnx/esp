@@ -128,9 +128,8 @@ eval "CHOICE=\${$SELECTED}"
 PROJECT_PATH="projects/$CHOICE"
 
 # Recreate relative symlinks at root
-rm -f main CMakeLists.txt sdkconfig
+rm -f main CMakeLists.txt
 ln -s "$PROJECT_PATH/main" main
 ln -s "$PROJECT_PATH/CMakeLists.txt" CMakeLists.txt
-[ -f "$PROJECT_PATH/sdkconfig" ] && ln -s "$PROJECT_PATH/sdkconfig" sdkconfig
 
 printf "${BOLD_BLUE}✔ Active project switched to: %s${RESET}\n" "$CHOICE"
