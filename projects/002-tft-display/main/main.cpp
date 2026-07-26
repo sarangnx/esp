@@ -58,8 +58,11 @@ void tft_init(void) {
   ESP_LOGI(TAG, "panel_init returned %s (0x%x)", esp_err_to_name(err), err);
   ESP_ERROR_CHECK(err);
 
+  // offset the display to remove rainbowish noise on the edges
+  ESP_ERROR_CHECK(esp_lcd_panel_set_gap(panel_handle, 2, 1));
+
   // Set inversion
-  ESP_ERROR_CHECK(esp_lcd_panel_invert_color(panel_handle, true));
+  // ESP_ERROR_CHECK(esp_lcd_panel_invert_color(panel_handle, true));
 
   // Turn on backlight
   gpio_config_t io_conf = {};
@@ -98,6 +101,8 @@ extern "C" void app_main(void) {
   disp_cfg.flags.buff_dma = true;
   disp_cfg.flags.buff_spiram = false;
   disp_cfg.flags.sw_rotate = false;
+  disp_cfg.flags.swap_bytes = true;  // Helps in removing the color bleeding
+  disp_cfg.color_format = LV_COLOR_FORMAT_RGB565;
 
   lv_disp_t* disp = lvgl_port_add_disp(&disp_cfg);
   if (disp == NULL) {
@@ -112,9 +117,10 @@ extern "C" void app_main(void) {
     lv_obj_set_style_bg_color(scr, lv_color_black(), 0);
 
     lv_obj_t* label = lv_label_create(scr);
-    lv_label_set_text(label, "Hello ST7735!");
+    lv_label_set_text(label, "Hello\nWorld!");
+    lv_obj_set_style_text_font(label, &lv_font_montserrat_20, 0);
     lv_obj_set_style_text_color(label, lv_color_white(), 0);
-    lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_align(label, LV_ALIGN_CENTER, 0, -15);
 
     lvgl_port_unlock();
   }
