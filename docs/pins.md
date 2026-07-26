@@ -1,4 +1,4 @@
-md_content = """# ESP32-S2 Mini Complete Pinout & Wiring Guide
+# ESP32-S2 Mini Complete Pinout & Wiring Guide
 
 This document provides a consolidated, conflict-free pin mapping for connecting an SPI TFT display, native capacitive touch sensors, a 3x4 matrix keypad, and a status indicator LED to an **ESP32-S2 Mini** development board.
 
@@ -69,7 +69,20 @@ This document provides a consolidated, conflict-free pin mapping for connecting 
 3. **Common Ground:** Ensure the ground pin of the display, keypad array (if grounded), and status LED share a common ground reference with the ESP32-S2 board.
    """
 
-with open("esp32s2_mini_pinout_guide.md", "w", encoding="utf-8") as f:
-f.write(md_content)
+# Safe Pins for GPIO
 
-print("Markdown file generated successfully.")
+[esp32-s2-mini](https://www.espboards.dev/esp32/lolin-s2-mini/)
+
+Following pins are safe to use:
+
+- GPIO1
+- GPIO2
+- GPIO3
+- GPIO4
+- GPIO5
+- GPIO5
+- GPIO5
+- GPIO5
+- GPIO17
+- GPIO18
+- GPIO21
