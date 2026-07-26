@@ -41,3 +41,10 @@ We use `SPI2_HOST` to communicate with the display
 ## Wiring Diagram
 
 ![TFT Display Wiring Diagram](diagram.svg)
+
+## Enabling Fonts
+
+1. Run `idf.py menuconfig` to open configurations
+2. Goto `Component config -> LVGL configuration -> Font usage`
+3. Select Enable built-in fonts.
+4. Select required fonts
