@@ -4,6 +4,7 @@
 #include "driver/gpio.h"
 
 // ===== ST7735 Display Pin Configuration (ESP-IDF esp_lcd) =====
+static const char* TAG = "TFT_DISPLAY";
 
 #define TFT_SPI_HOST SPI2_HOST
 
@@ -25,7 +26,35 @@
 #define TFT_WIDTH 128
 #define TFT_HEIGHT 160
 
-// touch pad pin configuration
-#define TOUCH_GPIO GPIO_NUM_1
+// ====== touch matrix configuration ======
+
+// touch pad pins
+#define I2C_SDA_GPIO GPIO_NUM_9
+#define I2C_SCL_GPIO GPIO_NUM_7
+#define MPR121_IRQ_GPIO GPIO_NUM_5
+
+#define MPR121_ADDR 0x5A
+#define I2C_FREQ_HZ 400000
+
+// MPR121 registers
+#define MPR121_TOUCHSTATUS_L 0x00
+#define MPR121_ELE_CFG 0x5E
+#define MPR121_MHDR 0x2B
+#define MPR121_NHDR 0x2C
+#define MPR121_NCLR 0x2D
+#define MPR121_FDLR 0x2E
+#define MPR121_MHDF 0x2F
+#define MPR121_NHDF 0x30
+#define MPR121_NCLF 0x31
+#define MPR121_FDLF 0x32
+#define MPR121_NHDT 0x33
+#define MPR121_NCLT 0x34
+#define MPR121_FDLT 0x35
+#define MPR121_TOUCHTH_0 0x41
+#define MPR121_RELEASETH_0 0x42
+#define MPR121_DEBOUNCE 0x5B
+#define MPR121_CONFIG1 0x5C
+#define MPR121_CONFIG2 0x5D
+#define MPR121_SOFTRESET 0x80
 
 #endif  // PIN_CONFIG_H
