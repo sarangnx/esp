@@ -29,9 +29,9 @@ static const char* TAG = "TFT_DISPLAY";
 // ====== touch matrix configuration ======
 
 // touch pad pins
-#define I2C_SDA_GPIO GPIO_NUM_9
-#define I2C_SCL_GPIO GPIO_NUM_7
-#define MPR121_IRQ_GPIO GPIO_NUM_5
+#define I2C_SDA_GPIO GPIO_NUM_7
+#define I2C_SCL_GPIO GPIO_NUM_5
+#define MPR121_IRQ_GPIO GPIO_NUM_3
 
 #define MPR121_ADDR 0x5A
 #define I2C_FREQ_HZ 400000
