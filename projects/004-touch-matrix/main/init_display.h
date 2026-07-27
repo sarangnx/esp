@@ -12,16 +12,15 @@
 
 #include <stdio.h>
 
-static const char* TAG = "TFT_DISPLAY";
-
 typedef struct {
   esp_lcd_panel_handle_t panel;
   esp_lcd_panel_io_handle_t io;
+  lvgl_port_display_cfg_t disp_cfg;
 } tft_display_handles_t;
 
 // Initialize display hardware using ESP-IDF built-in ST7735 driver
 tft_display_handles_t tft_init(void) {
-  tft_display_handles_t handles = {.panel = NULL, .io = NULL};
+  tft_display_handles_t handles = {.panel = NULL, .io = NULL, .disp_cfg = {}};
 
   ESP_LOGI(TAG, "Initializing ST7735 display with esp_lcd...");
 
@@ -77,5 +76,23 @@ tft_display_handles_t tft_init(void) {
 
   ESP_LOGI(TAG, "ST7735 display initialized successfully (%dx%d)", TFT_WIDTH, TFT_HEIGHT);
 
+  lvgl_port_display_cfg_t disp_cfg = {};
+  disp_cfg.io_handle = handles.io;
+  disp_cfg.panel_handle = handles.panel;
+  disp_cfg.buffer_size = TFT_WIDTH * TFT_HEIGHT / 10;  // partial framebuffer, tune as needed
+  disp_cfg.double_buffer = true;
+  disp_cfg.hres = TFT_WIDTH;
+  disp_cfg.vres = TFT_HEIGHT;
+  disp_cfg.monochrome = false;
+  disp_cfg.rotation.swap_xy = false;
+  disp_cfg.rotation.mirror_x = false;
+  disp_cfg.rotation.mirror_y = false;
+  disp_cfg.flags.buff_dma = true;
+  disp_cfg.flags.buff_spiram = false;
+  disp_cfg.flags.sw_rotate = false;
+  disp_cfg.flags.swap_bytes = true;  // Helps in removing the color bleeding
+  disp_cfg.color_format = LV_COLOR_FORMAT_RGB565;
+
+  handles.disp_cfg = disp_cfg;
   return handles;
 }
