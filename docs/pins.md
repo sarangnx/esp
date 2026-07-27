@@ -1,8 +1,12 @@
 # ESP32-S2 Mini Complete Pinout & Wiring Guide
 
-This document provides a consolidated, conflict-free pin mapping for connecting an SPI TFT display, native capacitive touch sensors, a 3x4 matrix keypad, and a status indicator LED to an **ESP32-S2 Mini** development board.
+The additonal capabilities listed may vary base on the manufacturer.  
+Refer to manufacturer's pinout if available.
 
----
+The one I use is from [oceanlabz](http://oceanlabz.in/).
+There was no pinout reference available from this manufacturer.  
+So things like Native Touch Input may not work.  
+For me it did not work.
 
 ## Master Pinout Table
 
@@ -80,9 +84,9 @@ Following pins are safe to use:
 - GPIO3
 - GPIO4
 - GPIO5
-- GPIO5
-- GPIO5
-- GPIO5
+- GPIO8
+- GPIO7
+- GPIO8
 - GPIO17
 - GPIO18
 - GPIO21
