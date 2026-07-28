@@ -6,7 +6,11 @@
   "idf.port": "/dev/ttyACM0",
   "idf.openOcdConfigs": ["interface/ftdi/esp_ftdi.cfg", "target/esp32s2.cfg"],
   "clangd.path": "/home/work/.espressif/tools/esp-clang/esp-20.1.1_20250829/esp-clang/bin/clangd",
-  "clangd.arguments": ["--background-index", "--query-driver=**", "--compile-commands-dir=${workspaceFolder}/build"],
+  "clangd.arguments": [
+    "--background-index",
+    "--query-driver=**",
+    "--compile-commands-dir=${workspaceFolder}/build"
+  ],
   "terminal.integrated.env.linux": {
     "IDF_PATH": "/home/work/.espressif/v6.0.1/esp-idf"
   },
@@ -16,7 +20,10 @@
   "terminal.integrated.profiles.linux": {
     "zsh": {
       "path": "zsh",
-      "args": ["-c", "source /home/work/.espressif/v6.0.1/esp-idf/export.sh && zsh"]
+      "args": [
+        "-c",
+        "source /home/work/.espressif/v6.0.1/esp-idf/export.sh && zsh"
+      ]
     }
   },
   "terminal.integrated.defaultProfile.linux": "zsh",
