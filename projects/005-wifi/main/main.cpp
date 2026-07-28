@@ -1,3 +1,4 @@
+#include "display.h"
 #include "driver/gpio.h"
 #include "driver/i2c_master.h"
 #include "esp_lcd_panel_io.h"
@@ -6,7 +7,6 @@
 #include "esp_lvgl_port.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "init_display.h"
 #include "lvgl.h"
 #include "pin_config.h"
 
@@ -121,7 +121,8 @@ extern "C" void app_main(void) {
   ESP_LOGI(TAG, "Starting ST7735 Display with LVGL...");
 
   // Initialize display hardware (SPI bus, panel handle, backlight)
-  tft_display_handles_t handle = tft_init();
+  TftDisplay tft_display;
+  tft_display.init();
 
   keypad_setup();
   mpr121_init();
@@ -143,24 +144,12 @@ extern "C" void app_main(void) {
 
   ESP_LOGI(TAG, "MPR121 ready, waiting for touch events");
 
-  // Initialize LVGL port (starts lv_init() internally + its own timer task)
-  const lvgl_port_cfg_t lvgl_cfg = ESP_LVGL_PORT_INIT_CONFIG();
-  ESP_ERROR_CHECK(lvgl_port_init(&lvgl_cfg));
-  ESP_LOGI(TAG, "LVGL port initialized");
-
-  // Register the ST7735 panel as an LVGL display
-  lv_disp_t* disp = lvgl_port_add_disp(&handle.disp_cfg);
-  if (disp == NULL) {
-    ESP_LOGE(TAG, "Failed to add display to LVGL port");
-    return;
-  }
-
   lv_obj_t* label = NULL;
 
   // Any LVGL API calls must be wrapped in lvgl_port_lock()/unlock()
   // since lvgl_port runs its own task calling lv_task_handler().
   if (lvgl_port_lock(0)) {
-    lv_obj_t* scr = lv_disp_get_scr_act(disp);
+    lv_obj_t* scr = lv_disp_get_scr_act(tft_display.display);
     lv_obj_set_style_bg_color(scr, lv_color_black(), 0);
 
     label = lv_label_create(scr);
