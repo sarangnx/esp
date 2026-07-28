@@ -39,17 +39,20 @@ static const char* TAG = "TFT_DISPLAY";
 // MPR121 registers
 #define MPR121_TOUCHSTATUS_L 0x00
 #define MPR121_ELE_CFG 0x5E
-#define MPR121_MHDR 0x2B
-#define MPR121_NHDR 0x2C
-#define MPR121_NCLR 0x2D
-#define MPR121_FDLR 0x2E
-#define MPR121_MHDF 0x2F
-#define MPR121_NHDF 0x30
-#define MPR121_NCLF 0x31
-#define MPR121_FDLF 0x32
-#define MPR121_NHDT 0x33
-#define MPR121_NCLT 0x34
-#define MPR121_FDLT 0x35
+// Rising baseline filtering
+#define MPR121_MHDR 0x2B  // (MHDR): Maximum half delta  (0–63 / 0x00–0x3F) [1]
+#define MPR121_NHDR 0x2C  // (NHDR): Noise half delta  (0–63 / 0x00–0x3F) [1]
+#define MPR121_NCLR 0x2D  // (NCLR): Noise count limit  (0–255 / 0x00–0xFF) [14]
+#define MPR121_FDLR 0x2E  // (FDLR): Filter delay limit  (0–255 / 0x00–0xFF) [0]
+// Falling baseline filtering
+#define MPR121_MHDF 0x2F  // (MHDF): Maximum half delta (0–63 / 0x00–0x3F) [1]
+#define MPR121_NHDF 0x30  // (NHDF): Noise half delta (0–63 / 0x00–0x3F) [5]
+#define MPR121_NCLF 0x31  // (NCLF): Noise count limit (0–255 / 0x00–0xFF) [1]
+#define MPR121_FDLF 0x32  // (FDLF): Filter delay limit (0–255 / 0x00–0xFF) [0]
+// Touched State Baseline Registers
+#define MPR121_NHDT 0x33  // (NHDT): Noise half delta for touched state (0–63 / 0x00–0x3F) [0]
+#define MPR121_NCLT 0x34  // (NCLT): Noise count limit for touched state (0–255 / 0x00–0xFF) [0]
+#define MPR121_FDLT 0x35  // (FDLT): Filter delay limit for touched state (0–255 / 0x00–0xFF) [0]
 #define MPR121_TOUCHTH_0 0x41
 #define MPR121_RELEASETH_0 0x42
 #define MPR121_DEBOUNCE 0x5B

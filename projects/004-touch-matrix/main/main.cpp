@@ -67,7 +67,7 @@ void mpr121_init(void) {
   // baseline filtering / touch-release thresholds (typical defaults)
   mpr121_write(MPR121_MHDR, 0x01);
   mpr121_write(MPR121_NHDR, 0x01);
-  mpr121_write(MPR121_NCLR, 0x0E);
+  mpr121_write(MPR121_NCLR, 0x10);  // reduce noise so adjacent electrodes don't trigger each other
   mpr121_write(MPR121_FDLR, 0x00);
 
   mpr121_write(MPR121_MHDF, 0x01);
@@ -175,7 +175,7 @@ extern "C" void app_main(void) {
   ESP_LOGI(TAG, "Display initialized and message printed");
 
   while (1) {
-    vTaskDelay(pdMS_TO_TICKS(1000));
+    vTaskDelay(pdMS_TO_TICKS(200));
 
     // Safely update ONLY the label text
     if (lvgl_port_lock(0)) {
