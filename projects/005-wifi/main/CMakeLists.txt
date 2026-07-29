@@ -11,5 +11,6 @@ idf_component_register(SRCS "main.cpp"
     esp_event
     esp_netif
     lwip
+    esp_psram
 )
 

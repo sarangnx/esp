@@ -1,15 +1,10 @@
 #include "display.h"
-#include "driver/gpio.h"
-#include "driver/i2c_master.h"
-#include "esp_lcd_panel_io.h"
-#include "esp_lcd_panel_ops.h"
 #include "esp_log.h"
 #include "esp_lvgl_port.h"
-#include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "keypad.h"
-#include "lvgl.h"
 #include "pin_config.h"
+#include "wifi.h"
 
 #include <stdio.h>
 
@@ -22,6 +17,13 @@ extern "C" void app_main(void) {
 
   Mpr121Keypad keypad;
   keypad.init();
+
+  if (EspWifi::init()) {
+    ESP_LOGI(TAG, "✅  Connected to WiFi!");
+    // Your application logic here — HTTP requests, MQTT, etc.
+  } else {
+    ESP_LOGE(TAG, "❌  Could not connect to WiFi.");
+  }
 
   lv_obj_t* label = NULL;
 

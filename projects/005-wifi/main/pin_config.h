@@ -60,4 +60,6 @@ static const char* TAG = "TFT_DISPLAY";
 #define MPR121_CONFIG2 0x5D
 #define MPR121_SOFTRESET 0x80
 
+#define MAX_RETRY 5  // retries before giving up wifi connection
+
 #endif  // PIN_CONFIG_H
