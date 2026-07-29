@@ -3,6 +3,7 @@
     "ms-vscode.cpptools",
     "ms-vscode.cmake-tools",
     "espressif.esp-idf-extension",
-    "tldraw-org.tldraw-vscode"
+    "tldraw-org.tldraw-vscode",
+    "llvm-vs-code-extensions.vscode-clangd"
   ]
 }
