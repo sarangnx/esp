@@ -50,7 +50,7 @@ The script provides an interactive menu where you can:
 
 Once a project is selected, symlinks at the root directory (`main` and `CMakeLists.txt`) will automatically point to that project's files. This allows ESP-IDF tools to build and flash the selected project.
 
-# Dependencies
+## Dependencies
 
 Dependencies can be found in [components.espressif.com](https://components.espressif.com/).
 
@@ -60,3 +60,29 @@ Dependencies can be found in [components.espressif.com](https://components.espre
 # add a single dependency
 idf.py add-dependency "lvgl/lvgl^9.5.0"
 ```
+
+## Environment variables
+
+The `.envrc` file manages environment variables for the project. It's automatically loaded by [direnv](https://direnv.net/) when you enter the project directory.
+
+### Setting up .envrc
+
+1. Copy `.envrc.example` to `.envrc`:
+
+   ```bash
+   cp .envrc.example .envrc
+   ```
+
+2. Update `.envrc` with your values (e.g., WiFi credentials):
+
+   ```bash
+   export WIFI_SSID="your-ssid"
+   export WIFI_PASSWORD="your-password"
+   ```
+
+3. Allow direnv to load it:
+   ```bash
+   direnv allow
+   ```
+
+**Note:** The `.envrc` file is gitignored and should not be committed to the repository.

@@ -1,0 +1,2 @@
+export WIFI_SSID="home"
+export WIFI_PASSWORD="password"
