@@ -1,7 +1,5 @@
-add_compile_options("-DLV_CONF_INCLUDE_SIMPLE=1")
-add_compile_options("-DLV_CONF_PATH=${CMAKE_CURRENT_SOURCE_DIR}/lv_conf.h")
 
-idf_component_register(SRCS "main.cpp"
+idf_component_register(SRCS "main.cpp" "wifi.cpp"
   INCLUDE_DIRS "."
   REQUIRES
     freertos
