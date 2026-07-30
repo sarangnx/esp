@@ -1,6 +1,6 @@
 # Project Details
 
-Use a `ELC1083` touch sensor to increment a counter and show in the tft display.
+Connect ESP32 to a Wifi
 
 # ST7735 1.8" Display - Pin Connection Reference
 
