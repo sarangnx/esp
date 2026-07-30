@@ -15,8 +15,8 @@
 class EspWifi {
   private:
   static constexpr const char* TAG = "WIFI";
-  static char* ssid;
-  static char* password;
+  static const char* ssid;
+  static const char* password;
 
   static constexpr EventBits_t WIFI_CONNECTED_BIT = BIT0;
   static constexpr EventBits_t WIFI_FAIL_BIT = BIT1;

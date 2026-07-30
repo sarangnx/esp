@@ -14,8 +14,8 @@
 #include <cstdlib>
 #include <string>
 
-char* EspWifi::ssid = nullptr;
-char* EspWifi::password = nullptr;
+const char* EspWifi::ssid = WIFI_SSID;
+const char* EspWifi::password = WIFI_PASSWORD;
 
 EventGroupHandle_t EspWifi::wifi_event_group = nullptr;
 int EspWifi::retry_count = 0;
@@ -24,8 +24,6 @@ esp_event_handler_instance_t EspWifi::instance_any_id = nullptr;
 esp_event_handler_instance_t EspWifi::instance_got_ip = nullptr;
 
 bool EspWifi::init() {
-  EspWifi::ssid = getenv("WIFI_SSID");
-  EspWifi::password = getenv("WIFI_PASSWORD");
 
   // NSV is required by the WiFi driver to store operational data and credentials
   esp_err_t ret = nvs_flash_init();
