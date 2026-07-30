@@ -86,3 +86,16 @@ The `.envrc` file manages environment variables for the project. It's automatica
    ```
 
 **Note:** The `.envrc` file is gitignored and should not be committed to the repository.
+
+### Accessing env from code
+
+You cannot access env variables in code using `getenv("WIFI_SSID")`.
+
+```cmake
+# add this to root level CMakeLists.txt
+add_compile_definitions(
+    LV_CONF_PATH="${CMAKE_SOURCE_DIR}/main/lv_conf.h"
+    WIFI_SSID="$ENV{WIFI_SSID}"
+    WIFI_PASSWORD="$ENV{WIFI_PASSWORD}"
+)
+```

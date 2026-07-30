@@ -60,3 +60,22 @@ Also add these settings to make `lvgl_port` use PSRAM using it's built in implem
 /* Force LVGL to allocate its entire memory pool in PSRAM at startup */
 #define LV_MEM_POOL_ALLOC       heap_caps_malloc(LV_MEM_SIZE, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT)
 ```
+
+## Partition too small
+
+After adding lvgl and wifi, the file size of the build was over 1.06MB  
+We have a 4MB Flash and 2MB PSRAM partition
+
+# To change the flash size:
+
+1. Open SDK config UI `idf.py menuconfig`
+2. Goto `Serial flasher config`
+3. Open `Flash size`
+4. Set `4MB`
+
+# Setup partition
+
+1. Create `partitions.csv` at the root of the project repo.
+2. Open SDK config UI `idf.py menuconfig`
+3. Goto `Partition Table > Partition Table`
+4. Select `Custom partition table csv`
