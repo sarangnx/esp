@@ -1,5 +1,5 @@
 
-idf_component_register(SRCS "main.cpp" "wifi.cpp"
+idf_component_register(SRCS "main.cpp" "wifi.cpp" "http_client.cpp"
   INCLUDE_DIRS "."
   REQUIRES
     freertos
@@ -13,5 +13,6 @@ idf_component_register(SRCS "main.cpp" "wifi.cpp"
     esp_netif
     lwip
     esp_psram
+    esp_http_client
 )
 

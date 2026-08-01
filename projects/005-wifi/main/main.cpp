@@ -2,6 +2,7 @@
 #include "esp_log.h"
 #include "esp_lvgl_port.h"
 #include "freertos/task.h"
+#include "http_client.h"
 #include "keypad.h"
 #include "pin_config.h"
 #include "wifi.h"
