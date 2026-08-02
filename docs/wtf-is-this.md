@@ -66,16 +66,72 @@ Also add these settings to make `lvgl_port` use PSRAM using it's built in implem
 After adding lvgl and wifi, the file size of the build was over 1.06MB  
 We have a 4MB Flash and 2MB PSRAM partition
 
-# To change the flash size:
+### To change the flash size:
 
 1. Open SDK config UI `idf.py menuconfig`
 2. Goto `Serial flasher config`
 3. Open `Flash size`
 4. Set `4MB`
 
-# Setup partition
+### Setup partition
 
 1. Create `partitions.csv` at the root of the project repo.
 2. Open SDK config UI `idf.py menuconfig`
 3. Goto `Partition Table > Partition Table`
 4. Select `Custom partition table csv`
+
+## 4. TLS error when calling an https api
+
+### fix device clock
+
+For tls to work, we have to fix the device clock first.  
+For that sync time from ntp server after connecting to wifi.
+
+### enable tls
+
+To enable https support:
+
+1. Add `mbedtls` to `CMakeLists.txt`
+2. Set `config.crt_bundle_attach = esp_crt_bundle_attach;` in http client
+
+This will work only with some of the common CA's.
+If the website is using Let's Encrypt or any other different CA,
+we will have to manually add the certificates.
+
+### getting certificates from websites
+
+To get the certificates, use openssl:
+
+```bash
+openssl s_client -connect dummyjson.com:443 -showcerts
+```
+
+use the cert 1 and cert 2 from the above. The first one (cert 0) is short lived.
+It is rotated every few months. Concatenate the 2 certificated into a single
+`certificate.pem` file.
+
+```bash
+-----BEGIN CERTIFICATE-----
+<cert 1>
+-----END CERTIFICATE-----
+-----BEGIN CERTIFICATE-----
+<cert 2>
+-----END CERTIFICATE-----
+```
+
+Add the certificate in the `CmakeLists.txt` using `EMBED_TXTFILES path/certificate.pem`.
+
+Then add the following in the http config:
+
+```cpp
+extern const char certificate_pem_start[] asm("_binary_certificate_pem_start");
+extern const char certificate_pem_end[]   asm("_binary_certificate_pem_end");
+
+esp_http_client_config_t config = {
+    .url = url.c_str(),
+    .cert_pem = certificate_pem_start,
+};
+```
+
+The symbol name is derived from the filename — `certificate_pem` → `_binary_certificate_pem_start/end`.
+(slashes and dots become underscores).
