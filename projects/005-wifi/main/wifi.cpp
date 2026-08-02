@@ -2,6 +2,7 @@
 
 #include "esp_event.h"
 #include "esp_log.h"
+#include "esp_sntp.h"
 #include "esp_wifi.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
@@ -119,5 +120,19 @@ void EspWifi::wifi_event_handler(void* arg,
     ESP_LOGI(TAG, "Got IP: " IPSTR, IP2STR(&event->ip_info.ip));
     EspWifi::retry_count = 0;
     xEventGroupSetBits(EspWifi::wifi_event_group, WIFI_CONNECTED_BIT);
+
+    esp_sntp_setoperatingmode(SNTP_OPMODE_POLL);
+    esp_sntp_setservername(0, "pool.ntp.org");
+    esp_sntp_init();
+
+    time_t now = 0;
+    struct tm timeinfo = {};
+    int retry = 0;
+    while (timeinfo.tm_year < (2020 - 1900) && retry++ < 15) {
+      vTaskDelay(pdMS_TO_TICKS(1000));
+      time(&now);
+      localtime_r(&now, &timeinfo);
+    }
+    ESP_LOGI(TAG, "Time synced: %s", asctime(&timeinfo));
   }
 }
