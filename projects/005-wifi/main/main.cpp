@@ -1,7 +1,11 @@
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
+// free rtos should be included before esp headers to avoid compilation errors
+
+#include "cJSON.h"
 #include "display.h"
 #include "esp_log.h"
-#include "esp_lvgl_port.h"
-#include "freertos/task.h"
 #include "http_client.h"
 #include "keypad.h"
 #include "pin_config.h"
@@ -10,7 +14,7 @@
 #include <stdio.h>
 
 extern "C" void app_main(void) {
-  ESP_LOGI(TAG, "Starting ST7735 Display with LVGL...");
+  static constexpr const char* TAG = "MAIN";
 
   // Initialize display hardware (SPI bus, panel handle, backlight)
   TftDisplay tft_display;
@@ -28,30 +32,38 @@ extern "C" void app_main(void) {
 
   lv_obj_t* label = NULL;
 
-  // Any LVGL API calls must be wrapped in lvgl_port_lock()/unlock()
-  // since lvgl_port runs its own task calling lv_task_handler().
-  if (lvgl_port_lock(0)) {
-    lv_obj_t* scr = lv_disp_get_scr_act(tft_display.display);
-    lv_obj_set_style_bg_color(scr, lv_color_black(), 0);
-
-    label = lv_label_create(scr);
-    lv_label_set_text(label, "Initializing...!");
-    lv_obj_set_style_text_font(label, &lv_font_montserrat_20, 0);
-    lv_obj_set_style_text_color(label, lv_color_white(), 0);
-    lv_obj_align(label, LV_ALIGN_CENTER, 0, -15);
-
-    lvgl_port_unlock();
-  }
+  tft_display.drawText(&label, new std::string("Initializing..."));
 
   ESP_LOGI(TAG, "Display initialized and message printed");
 
-  while (1) {
-    vTaskDelay(pdMS_TO_TICKS(200));
+  HttpClient http_client("https://dummyjson.com/quotes/random");
 
-    // Safely update ONLY the label text
-    if (lvgl_port_lock(0)) {
-      lv_label_set_text_fmt(label, "touched: %d", keypad.touched_key);
-      lvgl_port_unlock();
+  http_client.get([&label,
+                   &tft_display](int status_code, const std::string& response_body, esp_err_t err) {
+    if (err == ESP_OK) {
+      ESP_LOGI(TAG, "HTTP GET successful. Status code: %d", status_code);
+      ESP_LOGI(TAG, "Response body: %s", response_body.c_str());
+
+      cJSON* json = cJSON_Parse(response_body.c_str());
+
+      tft_display.drawText(&label,
+                           new std::string(json ? cJSON_GetObjectItem(json, "quote")->valuestring
+                                                : "Failed to parse JSON"));
+
+      cJSON_Delete(json);
+
+    } else {
+      ESP_LOGE(TAG, "HTTP GET failed with error: %s", esp_err_to_name(err));
     }
-  }
+  });
+
+  // while (1) {
+  //   vTaskDelay(pdMS_TO_TICKS(200));
+
+  //   // Safely update ONLY the label text
+  //   if (lvgl_port_lock(0)) {
+  //     lv_label_set_text_fmt(label, "touched: %d", keypad.touched_key);
+  //     lvgl_port_unlock();
+  //   }
+  // }
 }

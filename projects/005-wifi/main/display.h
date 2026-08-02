@@ -17,5 +17,5 @@ class TftDisplay {
 
   void init(void);
 
-  void drawText(lv_obj_t* label, std::string* text = nullptr);
+  void drawText(lv_obj_t** label, std::string* text = nullptr);
 };
