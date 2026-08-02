@@ -1,6 +1,11 @@
 #include "http_client.h"
 
+#include "esp_crt_bundle.h"
+
 #include <cstring>
+
+extern const char dummyjson_chain_pem_start[] asm("_binary_dummyjson_chain_pem_start");
+extern const char dummyjson_chain_pem_end[] asm("_binary_dummyjson_chain_pem_end");
 
 const char* HttpClient::TAG = "HttpClient";
 
@@ -52,6 +57,7 @@ void HttpClient::get(Callback _callback) {
   config.user_data = this;  // pass 'this' so handler can reach members
   config.is_async = true;
   config.timeout_ms = 5000;
+  config.cert_pem = dummyjson_chain_pem_start;
 
   client = esp_http_client_init(&config);
 

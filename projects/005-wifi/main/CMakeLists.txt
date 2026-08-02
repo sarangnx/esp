@@ -1,6 +1,7 @@
 
 idf_component_register(SRCS "main.cpp" "wifi.cpp" "http_client.cpp"
   INCLUDE_DIRS "."
+  EMBED_TXTFILES "certs/dummyjson_chain.pem"
   REQUIRES
     freertos
     driver
@@ -14,5 +15,7 @@ idf_component_register(SRCS "main.cpp" "wifi.cpp" "http_client.cpp"
     lwip
     esp_psram
     esp_http_client
+    cjson
+    mbedtls
 )
 
