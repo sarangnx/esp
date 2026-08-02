@@ -1,8 +1,6 @@
 #include "http_client.h"
 
-#include "esp_crt_bundle.h"
-
-#include <cstring>
+#include "esp_log.h"
 
 extern const char dummyjson_chain_pem_start[] asm("_binary_dummyjson_chain_pem_start");
 extern const char dummyjson_chain_pem_end[] asm("_binary_dummyjson_chain_pem_end");

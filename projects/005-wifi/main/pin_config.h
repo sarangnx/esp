@@ -1,11 +1,7 @@
 #ifndef PIN_CONFIG_H
 #define PIN_CONFIG_H
 
-#include "driver/gpio.h"
-
 // ===== ST7735 Display Pin Configuration (ESP-IDF esp_lcd) =====
-static const char* TAG = "TFT_DISPLAY";
-
 #define TFT_SPI_HOST SPI2_HOST
 
 // SPI Interface Pins
