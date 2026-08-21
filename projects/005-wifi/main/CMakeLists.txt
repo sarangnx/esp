@@ -1,5 +1,5 @@
 
-idf_component_register(SRCS "main.cpp" "wifi.cpp" "http_client.cpp" "display.cpp"
+idf_component_register(SRCS "main.cpp" "wifi.cpp" "http_client.cpp" "display.cpp" "keypad.cpp"
   INCLUDE_DIRS "."
   EMBED_TXTFILES "certs/dummyjson_chain.pem"
   REQUIRES
