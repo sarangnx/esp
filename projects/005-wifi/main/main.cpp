@@ -8,10 +8,11 @@
 #include "esp_log.h"
 #include "http_client.h"
 #include "keypad.h"
-#include "pin_config.h"
 #include "wifi.h"
 
+#include <ctime>
 #include <stdio.h>
+#include <string>
 
 extern "C" void app_main(void) {
   static constexpr const char* TAG = "MAIN";
@@ -38,26 +39,31 @@ extern "C" void app_main(void) {
 
   ESP_LOGI(TAG, "Display initialized and message printed");
 
-  HttpClient http_client("https://dummyjson.com/quotes/random");
+  std::time_t now = std::time(nullptr);
+  std::tm* local = std::localtime(&now);
 
-  http_client.get([&label,
-                   &tft_display](int status_code, const std::string& response_body, esp_err_t err) {
-    if (err == ESP_OK) {
-      ESP_LOGI(TAG, "HTTP GET successful. Status code: %d", status_code);
-      ESP_LOGI(TAG, "Response body: %s", response_body.c_str());
+  int seconds = local->tm_sec;
 
-      cJSON* json = cJSON_Parse(response_body.c_str());
+  HttpClient http_client("https://dummyjson.com/posts/" + std::to_string(seconds));
 
-      tft_display.drawText(&label,
-                           new std::string(json ? cJSON_GetObjectItem(json, "quote")->valuestring
-                                                : "Failed to parse JSON"));
+  http_client.get(
+      [&label, &tft_display](int status_code, const std::string& response_body, esp_err_t err) {
+        if (err == ESP_OK) {
+          ESP_LOGI(TAG, "HTTP GET successful. Status code: %d", status_code);
+          ESP_LOGI(TAG, "Response body: %s", response_body.c_str());
 
-      cJSON_Delete(json);
+          cJSON* json = cJSON_Parse(response_body.c_str());
 
-    } else {
-      ESP_LOGE(TAG, "HTTP GET failed with error: %s", esp_err_to_name(err));
-    }
-  });
+          tft_display.drawText(&label,
+                               new std::string(json ? cJSON_GetObjectItem(json, "body")->valuestring
+                                                    : "Failed to parse JSON"));
+
+          cJSON_Delete(json);
+
+        } else {
+          ESP_LOGE(TAG, "HTTP GET failed with error: %s", esp_err_to_name(err));
+        }
+      });
 
   while (1) {
     vTaskDelay(pdMS_TO_TICKS(200));
