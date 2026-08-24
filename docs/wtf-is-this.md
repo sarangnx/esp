@@ -135,3 +135,14 @@ esp_http_client_config_t config = {
 
 The symbol name is derived from the filename — `certificate_pem` → `_binary_certificate_pem_start/end`.
 (slashes and dots become underscores).
+
+## 5. Keypad random touch events
+
+There are instances when the capacitive touch keypad behaves in
+a strange way. Touching one pad will trigger it's surrounding pads as well, causing ghost touch.
+
+That's due to grounding/capacitance issue.
+When the keypad rests on a conductive surface, it adds capacitance to the electrodes,
+throwing off the MPR121's baseline and causing ghost touches.
+
+**Solution:** Keep the keypad on a non-conductive surface. 🤦
