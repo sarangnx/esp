@@ -28,6 +28,7 @@ class Mpr121Keypad {
 
   public:
   int touched_key = -1;
+  bool key_pressed = false;
 
   void init(void);
 
@@ -46,4 +47,6 @@ class Mpr121Keypad {
    * Returns a 16-bit value where bits 0-11 correspond to electrodes 0-11.
    */
   uint16_t touch_status();
+
+  bool getKeyEvent(int& key_out);
 };

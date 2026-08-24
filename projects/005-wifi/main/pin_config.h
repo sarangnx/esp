@@ -32,7 +32,10 @@
 #define MPR121_ADDR 0x5A
 #define I2C_FREQ_HZ 400000
 
+//
 // MPR121 registers
+// https://files.seeedstudio.com/wiki/Grove-I2C_Touch_Sensor/res/Freescale_Semiconductor;MPR121QR2.pdf
+//
 #define MPR121_TOUCHSTATUS_L 0x00
 #define MPR121_ELE_CFG 0x5E
 // Rising baseline filtering
@@ -49,12 +52,22 @@
 #define MPR121_NHDT 0x33  // (NHDT): Noise half delta for touched state (0–63 / 0x00–0x3F) [0]
 #define MPR121_NCLT 0x34  // (NCLT): Noise count limit for touched state (0–255 / 0x00–0xFF) [0]
 #define MPR121_FDLT 0x35  // (FDLT): Filter delay limit for touched state (0–255 / 0x00–0xFF) [0]
+
+// Touch and release thresholds for each electrode (0-11)
+// (0x41~0x5A)
 #define MPR121_TOUCHTH_0 0x41
 #define MPR121_RELEASETH_0 0x42
+
 #define MPR121_DEBOUNCE 0x5B
-#define MPR121_CONFIG1 0x5C
-#define MPR121_CONFIG2 0x5D
+
+#define MPR121_CDC 0x5C  // CDC Configuration Register (0x5C)
+#define MPR121_CDT 0x5D  // CDT Configuration Register (0x5D)
 #define MPR121_SOFTRESET 0x80
+
+// 6 First Filter Iterations, 16uA Charge Discharge Current
+#define MPR121_CDC_DEFAULT 0x10
+// 0.5uS Charge Discharge Time, 4 Second Filter Iterations, 1ms Electrode Sample Interval
+#define MPR121_CDT_DEFAULT 0x24
 
 #define MAX_RETRY 5  // retries before giving up wifi connection
 

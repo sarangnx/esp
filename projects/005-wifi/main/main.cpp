@@ -23,6 +23,8 @@ extern "C" void app_main(void) {
   Mpr121Keypad keypad;
   keypad.init();
 
+  tft_display.registerKeypad(&keypad);
+
   if (EspWifi::init()) {
     ESP_LOGI(TAG, "✅  Connected to WiFi!");
     // Your application logic here — HTTP requests, MQTT, etc.
@@ -57,13 +59,7 @@ extern "C" void app_main(void) {
     }
   });
 
-  // while (1) {
-  //   vTaskDelay(pdMS_TO_TICKS(200));
-
-  //   // Safely update ONLY the label text
-  //   if (lvgl_port_lock(0)) {
-  //     lv_label_set_text_fmt(label, "touched: %d", keypad.touched_key);
-  //     lvgl_port_unlock();
-  //   }
-  // }
+  while (1) {
+    vTaskDelay(pdMS_TO_TICKS(200));
+  }
 }

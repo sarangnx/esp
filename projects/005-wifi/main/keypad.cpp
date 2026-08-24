@@ -50,8 +50,11 @@ void Mpr121Keypad::runTaskLoop() {
         if (touched && !was_touched) {
           ESP_LOGI(TAG, "Electrode %d touched", i);
           touched_key = i;
+          key_pressed = true;
         } else if (!touched && was_touched) {
           ESP_LOGI(TAG, "Electrode %d released", i);
+
+          key_pressed = false;
         }
       }
       prev_status = status;
@@ -86,13 +89,13 @@ void Mpr121Keypad::init(void) {
   // Baseline filtering / touch-release thresholds
   write(MPR121_MHDR, 0x01);
   write(MPR121_NHDR, 0x01);
-  write(MPR121_NCLR, 0x10);
+  write(MPR121_NCLR, 0x00);
   write(MPR121_FDLR, 0x00);
 
   write(MPR121_MHDF, 0x01);
-  write(MPR121_NHDF, 0x05);
-  write(MPR121_NCLF, 0x01);
-  write(MPR121_FDLF, 0x00);
+  write(MPR121_NHDF, 0x01);
+  write(MPR121_NCLF, 0xFF);
+  write(MPR121_FDLF, 0x02);
 
   write(MPR121_NHDT, 0x00);
   write(MPR121_NCLT, 0x00);
@@ -100,13 +103,14 @@ void Mpr121Keypad::init(void) {
 
   // Per-electrode touch/release thresholds (0-11)
   for (int i = 0; i < 12; i++) {
-    write(MPR121_TOUCHTH_0 + i * 2, 12);
-    write(MPR121_RELEASETH_0 + i * 2, 6);
+    write(MPR121_TOUCHTH_0 + i * 2, 0x06);
+    write(MPR121_RELEASETH_0 + i * 2, 0x0A);
   }
 
-  write(MPR121_DEBOUNCE, 0x00);
-  write(MPR121_CONFIG1, 0x10);  // 16uA charge current
-  write(MPR121_CONFIG2, 0x20);  // 0.5uS encoding, 1ms period
+  write(MPR121_DEBOUNCE, 0x22);
+
+  write(MPR121_CDC, MPR121_CDC_DEFAULT);
+  write(MPR121_CDT, MPR121_CDT_DEFAULT);
 
   write(MPR121_ELE_CFG, 0x0C);  // enable all 12 electrodes, run mode
 
@@ -156,4 +160,14 @@ uint16_t Mpr121Keypad::touch_status() {
   uint8_t buf[2] = {0};
   read(MPR121_TOUCHSTATUS_L, buf, 2);
   return (buf[1] << 8) | buf[0];  // bits 0-11 = electrodes 0-11
+}
+
+bool Mpr121Keypad::getKeyEvent(int& key_out) {
+  if (touched_key >= 0) {
+    key_out = touched_key;
+    touched_key = -1;
+    return true;
+  }
+
+  return false;
 }
