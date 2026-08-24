@@ -1,6 +1,6 @@
 # Project Details
 
-Use a `ELC1083` touch sensor to increment a counter and show in the tft display.
+Use a `MPR121` capacitive touch 3x4 matrix keypad and log the touch events.
 
 # ST7735 1.8" Display - Pin Connection Reference
 

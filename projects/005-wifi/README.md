@@ -1,8 +1,18 @@
 # Project Details
 
-Connect ESP32 to a Wifi
+Connect ESP32 to a Wifi, get json data from an api and parse it,
+display it in the tft screen and use the `MPR121` 3x4 keypad to control the screen scroll.
 
-# ST7735 1.8" Display - Pin Connection Reference
+## Prerequisites
+
+Setup `.envrc` file with the Wifi credentials
+
+```bash
+export WIFI_SSID="home"
+export WIFI_PASSWORD="home-wifi-password"
+```
+
+# Pin Connection Reference
 
 ## Overview
 
