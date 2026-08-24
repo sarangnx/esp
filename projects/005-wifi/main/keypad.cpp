@@ -103,11 +103,11 @@ void Mpr121Keypad::init(void) {
 
   // Per-electrode touch/release thresholds (0-11)
   for (int i = 0; i < 12; i++) {
-    write(MPR121_TOUCHTH_0 + i * 2, 0x06);
-    write(MPR121_RELEASETH_0 + i * 2, 0x0A);
+    write(MPR121_TOUCHTH_0 + i * 2, 0x12);
+    write(MPR121_RELEASETH_0 + i * 2, 0x06);
   }
 
-  write(MPR121_DEBOUNCE, 0x22);
+  write(MPR121_DEBOUNCE, 0x00);
 
   write(MPR121_CDC, MPR121_CDC_DEFAULT);
   write(MPR121_CDT, MPR121_CDT_DEFAULT);
