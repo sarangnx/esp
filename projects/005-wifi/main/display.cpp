@@ -1,5 +1,6 @@
 #include "display.h"
 
+#include "core/lv_group.h"
 #include "core/lv_obj_pos.h"
 #include "driver/gpio.h"
 #include "esp_lcd_panel_ops.h"
@@ -103,8 +104,19 @@ void TftDisplay::drawText(lv_obj_t** label, std::string* text) {
       lv_obj_t* scr = lv_disp_get_scr_act(display);
       lv_obj_set_style_bg_color(scr, lv_color_black(), 0);
 
+      lv_group_t* group = lv_group_create();
+      // Set it as default so new widgets auto-join (optional)
+      lv_group_set_default(group);
+
+      // Add the active screen to the group so it receives key events
+      lv_group_add_obj(group, scr);
+
+      // Link your indev to the group
+      lv_indev_set_group(keypad_indev, group);
+
       lv_obj_set_scroll_dir(scr, LV_DIR_VER);
       lv_obj_set_scrollbar_mode(scr, LV_SCROLLBAR_MODE_AUTO);
+      lv_obj_add_flag(scr, LV_OBJ_FLAG_SCROLLABLE);
 
       *label = lv_label_create(scr);
       lv_obj_align(*label, LV_ALIGN_TOP_LEFT, lv_pct(5), lv_pct(5));
@@ -114,6 +126,8 @@ void TftDisplay::drawText(lv_obj_t** label, std::string* text) {
       lv_obj_set_style_text_color(*label, lv_color_white(), 0);
 
       lv_label_set_long_mode(*label, LV_LABEL_LONG_WRAP);
+
+      lv_group_add_obj(group, *label);
     }
 
     lv_label_set_text(*label, text ? text->c_str() : "");
@@ -141,18 +155,18 @@ void TftDisplay::registerKeypad(Mpr121Keypad* keypad) {
   }
 }
 
-static const uint32_t KEY_MAP[12] = {LV_KEY_UP,
-                                     LV_KEY_DOWN,
-                                     LV_KEY_LEFT,
+static const uint32_t KEY_MAP[12] = {'0',
                                      LV_KEY_RIGHT,
+                                     '0',
+                                     '0',
+                                     LV_KEY_UP,
                                      LV_KEY_ENTER,
-                                     LV_KEY_ESC,
-                                     LV_KEY_BACKSPACE,
-                                     LV_KEY_NEXT,
-                                     '1',
-                                     '2',
-                                     '3',
-                                     '4'};
+                                     LV_KEY_DOWN,
+                                     '0',
+                                     '0',
+                                     LV_KEY_LEFT,
+                                     '0',
+                                     LV_KEY_ESC};
 
 void TftDisplay::keypad_read_cb(lv_indev_t* indev, lv_indev_data_t* data) {
   auto* keypad = static_cast<Mpr121Keypad*>(lv_indev_get_user_data(indev));
