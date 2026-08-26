@@ -1,13 +1,10 @@
-#include "display/lv_display.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
 // free rtos should be included before esp headers to avoid compilation errors
 
-#include "cJSON.h"
 #include "display.h"
 #include "esp_log.h"
-#include "http_client.h"
 #include "keypad.h"
 #include "screens/loading.h"
 #include "screens/weather.h"
@@ -47,18 +44,9 @@ extern "C" void app_main(void) {
 
   ESP_LOGI(TAG, "Display initialized and message printed");
 
-  std::string url =
-      "https://api.weatherapi.com/v1/current.json?key=" + std::string(WEATHER_API_KEY) +
-      "&q=Thalassery&aqi=no";
-
-  HttpClient http_client(url);
-
-  std::string response = http_client.get();
-
-  ESP_LOGI(TAG, "HTTP GET response: %s", response.c_str());
-
   WeatherScreen weather_screen;
   lv_screen_load_anim(weather_screen.create(), LV_SCR_LOAD_ANIM_FADE_ON, 500, 0, false);
+  weather_screen.loadWeatherData();
 
   while (1) {
     vTaskDelay(pdMS_TO_TICKS(200));

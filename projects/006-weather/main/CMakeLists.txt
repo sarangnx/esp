@@ -24,7 +24,7 @@ idf_component_register(
     lwip
     esp_psram
     esp_http_client
-    cjson
+    arduinojson
     mbedtls
 )
 
