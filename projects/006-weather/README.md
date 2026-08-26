@@ -1,7 +1,7 @@
 # Project Details
 
-Connect ESP32 to a Wifi, get json data from an api and parse it,
-display it in the tft screen and use the `MPR121` 3x4 keypad to control the screen scroll.
+Connect ESP32 to a Wifi, get weather data from api
+display it in the tft screen using lvgl ui components.
 
 ## Prerequisites
 
@@ -10,6 +10,8 @@ Setup `.envrc` file with the Wifi credentials
 ```bash
 export WIFI_SSID="home"
 export WIFI_PASSWORD="home-wifi-password"
+
+export WEATHER_API_KEY="apikey"
 ```
 
 # Pin Connection Reference
