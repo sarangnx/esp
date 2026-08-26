@@ -46,6 +46,7 @@ esp_err_t HttpClient::event_handler(esp_http_client_event_t* evt) {
   return ESP_OK;
 }
 
+// asynchronous GET request with callback
 void HttpClient::get(Callback _callback) {
   callback = _callback;
   response_body.clear();
@@ -75,6 +76,7 @@ void HttpClient::get(Callback _callback) {
   }
 }
 
+// synchronous GET request that returns the response body string
 std::string HttpClient::get() {
   response_body.clear();
 

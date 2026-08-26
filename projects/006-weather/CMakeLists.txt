@@ -8,4 +8,4 @@ add_compile_definitions(
 )
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-project(005-wifi)
+project(006-weather)
