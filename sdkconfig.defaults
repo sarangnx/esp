@@ -1,6 +1,6 @@
 #
 # Automatically generated file. DO NOT EDIT.
-# Espressif IoT Development Framework (ESP-IDF) 6.0.1 Project Configuration
+# Espressif IoT Development Framework (ESP-IDF) 6.0.2 Project Configuration
 #
 # default:
 CONFIG_SOC_ADC_SUPPORTED=y
@@ -366,6 +366,8 @@ CONFIG_SOC_SPIRAM_SUPPORTED=y
 CONFIG_SOC_SPIRAM_XIP_SUPPORTED=y
 # default:
 CONFIG_SOC_USB_OTG_PERIPH_NUM=1
+# default:
+CONFIG_SOC_USB_FSLS_PHY_NUM=1
 # default:
 CONFIG_SOC_SHA_DMA_MAX_BUFFER_SIZE=3968
 # default:
@@ -917,16 +919,27 @@ CONFIG_COMPILER_CXX_GLIBCXX_CONSTEXPR_NO_CHANGE=y
 #
 
 #
-# BLE Log
+# BT Logs
 #
-# default:
-# CONFIG_BLE_LOG_ENABLED is not set
-# end of BLE Log
+
+#
+# Log Sources
+#
+# end of Log Sources
 
 # default:
-# CONFIG_BT_BLE_LOG_SPI_OUT_ENABLED is not set
+# CONFIG_BT_LOG_CRITICAL_ONLY is not set
 # default:
-# CONFIG_BT_BLE_LOG_UHCI_OUT_ENABLED is not set
+# CONFIG_BLE_LOG_ENABLED is not set
+
+#
+# Legacy SPI Log Output (Deprecated - use BT Log Async Output instead)
+#
+# default:
+# CONFIG_BT_BLE_LOG_SPI_OUT_ENABLED is not set
+# end of Legacy SPI Log Output (Deprecated - use BT Log Async Output instead)
+# end of BT Logs
+
 # default:
 # CONFIG_BT_LE_USED_MEM_STATISTICS_ENABLED is not set
 # end of Common Options
@@ -1601,6 +1614,8 @@ CONFIG_ESP_PHY_PLL_TRACK_PERIOD_MS=1000
 CONFIG_ESP_PHY_IRAM_OPT=y
 # default:
 # CONFIG_ESP_PHY_DEBUG is not set
+# default:
+CONFIG_ESP_PHY_ENABLE_VERSION_PRINT=y
 # end of PHY
 
 #
@@ -1793,8 +1808,7 @@ CONFIG_ESP_SYSTEM_MEMPROT_PMS_LOCK=y
 CONFIG_ESP_SYSTEM_EVENT_QUEUE_SIZE=32
 # default:
 CONFIG_ESP_SYSTEM_EVENT_TASK_STACK_SIZE=2304
-# default:
-CONFIG_ESP_MAIN_TASK_STACK_SIZE=3584
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=32768
 # default:
 CONFIG_ESP_MAIN_TASK_AFFINITY_CPU0=y
 # default:
@@ -2823,8 +2837,6 @@ CONFIG_MBEDTLS_TLS_SERVER_AND_CLIENT=y
 # default:
 # CONFIG_MBEDTLS_TLS_CLIENT_ONLY is not set
 # default:
-# CONFIG_MBEDTLS_TLS_DISABLED is not set
-# default:
 # CONFIG_MBEDTLS_SSL_KEEP_PEER_CERTIFICATE is not set
 # default:
 # CONFIG_MBEDTLS_SSL_CONTEXT_SERIALIZATION is not set
@@ -2909,8 +2921,6 @@ CONFIG_MBEDTLS_CMAC_C=y
 #
 # Asymmetric Ciphers
 #
-# default:
-CONFIG_MBEDTLS_BIGNUM_C=y
 # default:
 CONFIG_MBEDTLS_RSA_C=y
 # default:
@@ -4195,7 +4205,7 @@ CONFIG_ESP_SYSTEM_MEMPROT_FEATURE_LOCK=y
 CONFIG_ESP32S2_MEMPROT_FEATURE_LOCK=y
 CONFIG_SYSTEM_EVENT_QUEUE_SIZE=32
 CONFIG_SYSTEM_EVENT_TASK_STACK_SIZE=2304
-CONFIG_MAIN_TASK_STACK_SIZE=3584
+CONFIG_MAIN_TASK_STACK_SIZE=32768
 CONFIG_INT_WDT=y
 CONFIG_INT_WDT_TIMEOUT_MS=300
 CONFIG_TASK_WDT=y
