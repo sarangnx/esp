@@ -21,3 +21,7 @@ Refer to [Pin Diagram](../002-tft-display/README.md#pin-definitions) and [Font s
 ## Wiring Diagram
 
 ![TFT Display Wiring Diagram](diagram.svg)
+
+# UI Preview
+
+![UI Preview](image.jpg)
