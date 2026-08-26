@@ -33,6 +33,11 @@ extern "C" void app_main(void) {
 
   loading_screen.setText(new std::string("Connecting to WiFi..."));
 
+  // Wait for a moment before attempting to connect to WiFi
+  // This is to prevent Wifi brownout issues when antenna draws too much
+  // current during startup causing the ESP32 to reset
+  vTaskDelay(pdMS_TO_TICKS(2000));
+
   if (EspWifi::init()) {
     ESP_LOGI(TAG, "✅  Connected to WiFi!");
     loading_screen.setText(new std::string("Connected to WiFi."));
