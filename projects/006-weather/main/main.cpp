@@ -15,6 +15,11 @@
 extern "C" void app_main(void) {
   static constexpr const char* TAG = "MAIN";
 
+  // Wait for a moment before attempting to connect to WiFi
+  // This is to prevent Wifi brownout issues when antenna draws too much
+  // current during startup causing the ESP32 to reset
+  vTaskDelay(pdMS_TO_TICKS(2000));
+
   // Initialize display hardware (SPI bus, panel handle, backlight)
   TftDisplay tft_display;
   tft_display.init();
@@ -32,11 +37,6 @@ extern "C" void app_main(void) {
   tft_display.registerKeypad(&keypad);
 
   loading_screen.setText(new std::string("Connecting to WiFi..."));
-
-  // Wait for a moment before attempting to connect to WiFi
-  // This is to prevent Wifi brownout issues when antenna draws too much
-  // current during startup causing the ESP32 to reset
-  vTaskDelay(pdMS_TO_TICKS(2000));
 
   if (EspWifi::init()) {
     ESP_LOGI(TAG, "✅  Connected to WiFi!");
