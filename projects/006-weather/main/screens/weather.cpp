@@ -4,11 +4,14 @@
 #include "core/lv_obj_pos.h"
 #include "core/lv_obj_style_gen.h"
 #include "core/lv_obj_tree.h"
+#include "esp_log.h"
 #include "font/lv_font.h"
 #include "http_client.h"
 #include "misc/lv_area.h"
+#include "widgets/image/lv_image.h"
 
 #include <iomanip>
+#include <stdlib.h>
 #include <string>
 
 lv_obj_t* WeatherScreen::create() {
@@ -45,9 +48,9 @@ void WeatherScreen::loadWeatherData() {
       "https://api.weatherapi.com/v1/current.json?key=" + std::string(WEATHER_API_KEY) +
       "&q=Thalassery&aqi=no";
 
-  HttpClient http_client(url);
+  HttpClient http_client;
 
-  std::string response = http_client.get();
+  std::string response = http_client.get(url);
 
   JsonDocument doc;
   deserializeJson(doc, response);
@@ -62,6 +65,32 @@ void WeatherScreen::loadWeatherData() {
 
   std::string condition = doc["current"]["condition"]["text"];
   std::string icon_url = "https:" + std::string(doc["current"]["condition"]["icon"]);
+
+  ESP_LOGI(TAG,
+           "Weather data loaded: %s, %s, %s, %s, %s",
+           name.c_str(),
+           region.c_str(),
+           temperature.c_str(),
+           condition.c_str(),
+           icon_url.c_str());
+
+  int icon_size = 0;
+  uint8_t* icon_data = http_client.getBuffered(icon_url, &icon_size);
+
+  lv_image_dsc_t* img_dsc = NULL;
+  if (icon_data != NULL) {
+    img_dsc = (lv_image_dsc_t*)calloc(1, sizeof(lv_image_dsc_t));
+    img_dsc->header.magic = LV_IMAGE_HEADER_MAGIC;
+    img_dsc->header.cf = LV_COLOR_FORMAT_RAW;
+    img_dsc->header.w = 0;
+    img_dsc->header.h = 0;
+    img_dsc->header.stride = 0;
+    img_dsc->data_size = icon_size;
+    img_dsc->data = icon_data;
+  }
+
+  ESP_LOGI(TAG, "Image data loaded: %s, %d bytes", icon_data == NULL ? "NULL" : "OK", icon_size);
+  ESP_LOGI(TAG, "Image descriptor created: %s", img_dsc == NULL ? "NULL" : "OK");
 
   lvgl_port_lock(0);
 
@@ -79,6 +108,21 @@ void WeatherScreen::loadWeatherData() {
   lv_obj_set_style_text_font(degree_label, &lv_font_montserrat_10, 0);
   lv_obj_set_style_text_color(degree_label, lv_color_make(0, 0, 0), 0);
   lv_label_set_text(degree_label, "°C");
+
+  if (img_dsc != NULL) {
+    icon = lv_image_create(weather_screen);
+    lv_image_set_src(icon, img_dsc);
+
+    // process the image immediately to get the dimensions
+    lv_obj_update_layout(icon);
+
+    ESP_LOGI(TAG, "icon dimensions %d x %d", lv_obj_get_width(icon), lv_obj_get_height(icon));
+
+    lv_obj_set_size(icon, 30, 30);
+    lv_image_set_inner_align(icon, LV_IMAGE_ALIGN_CONTAIN);
+
+    lv_obj_align(icon, LV_ALIGN_TOP_RIGHT, lv_pct(-5), lv_pct(5));
+  }
 
   condition_label = lv_label_create(weather_screen);
   lv_obj_align(condition_label, LV_ALIGN_TOP_LEFT, lv_pct(5), lv_pct(20));

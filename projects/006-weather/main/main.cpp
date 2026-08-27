@@ -47,6 +47,8 @@ extern "C" void app_main(void) {
     loading_screen.setText(new std::string("Failed to connect to WiFi."));
   }
 
+  vTaskDelay(pdMS_TO_TICKS(1000));
+
   ESP_LOGI(TAG, "Display initialized and message printed");
 
   WeatherScreen weather_screen;
