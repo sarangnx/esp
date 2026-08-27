@@ -7,15 +7,6 @@ extern const char weatherapi_pem_end[] asm("_binary_weatherapi_pem_end");
 
 const char* HttpClient::TAG = "HttpClient";
 
-HttpClient::HttpClient(const std::string& _url) : url(_url) {}
-
-HttpClient::~HttpClient() {
-  if (client) {
-    esp_http_client_close(client);
-    esp_http_client_cleanup(client);
-  }
-}
-
 esp_err_t HttpClient::event_handler(esp_http_client_event_t* evt) {
   HttpClient* self = static_cast<HttpClient*>(evt->user_data);
 
@@ -47,7 +38,7 @@ esp_err_t HttpClient::event_handler(esp_http_client_event_t* evt) {
 }
 
 // asynchronous GET request with callback
-void HttpClient::get(Callback _callback) {
+void HttpClient::get(std::string url, Callback _callback) {
   callback = _callback;
   response_body.clear();
 
@@ -59,7 +50,7 @@ void HttpClient::get(Callback _callback) {
   config.timeout_ms = 5000;
   config.cert_pem = weatherapi_pem_start;
 
-  client = esp_http_client_init(&config);
+  esp_http_client_handle_t client = esp_http_client_init(&config);
 
   esp_err_t err;
   // esp_http_client_perform returns ESP_ERR_HTTP_EAGAIN while in progress
@@ -74,10 +65,13 @@ void HttpClient::get(Callback _callback) {
     if (callback)
       callback(0, "", err);
   }
+
+  esp_http_client_close(client);
+  esp_http_client_cleanup(client);
 }
 
 // synchronous GET request that returns the response body string
-std::string HttpClient::get() {
+std::string HttpClient::get(std::string url) {
   response_body.clear();
 
   esp_http_client_config_t config = {};
@@ -88,7 +82,7 @@ std::string HttpClient::get() {
   config.timeout_ms = 5000;
   config.cert_pem = weatherapi_pem_start;
 
-  client = esp_http_client_init(&config);
+  esp_http_client_handle_t client = esp_http_client_init(&config);
 
   esp_err_t err = esp_http_client_perform(client);
 
@@ -98,5 +92,65 @@ std::string HttpClient::get() {
 
   ESP_LOGI(TAG, "HTTP GET completed with status code: %d", status_code);
 
+  esp_http_client_close(client);
+  esp_http_client_cleanup(client);
+
   return response_body;
+}
+
+uint8_t* HttpClient::getBuffered(std::string url, int* file_size) {
+  esp_http_client_handle_t client = nullptr;
+
+  esp_http_client_config_t config = {};
+  config.url = url.c_str();
+  config.is_async = false;
+  config.timeout_ms = 5000;
+  config.cert_pem = weatherapi_pem_start;
+
+  client = esp_http_client_init(&config);
+
+  // Open the connection
+  esp_err_t err = esp_http_client_open(client, 0);
+  if (err != ESP_OK) {
+    ESP_LOGE(TAG, "Failed to open HTTP connection: %s", esp_err_to_name(err));
+    esp_http_client_cleanup(client);
+    return nullptr;
+  }
+
+  // Get the content length (file size)
+  int content_length = esp_http_client_fetch_headers(client);
+  if (content_length <= 0) {
+    ESP_LOGE(TAG, "Failed to get content length, or size is 0");
+    esp_http_client_cleanup(client);
+    return nullptr;
+  }
+
+  *file_size = content_length;
+
+  // Allocate memory in PSRAM (SPIRAM)
+  response_buffer = (uint8_t*)heap_caps_malloc(content_length, MALLOC_CAP_SPIRAM);
+  if (response_buffer == NULL) {
+    ESP_LOGE(TAG, "Failed to allocate %d bytes in PSRAM", content_length);
+    esp_http_client_cleanup(client);
+    return nullptr;
+  }
+
+  //  Read the data into  buffer
+  int read_len = 0;
+  while (read_len < content_length) {
+    int ret =
+        esp_http_client_read(client, (char*)response_buffer + read_len, content_length - read_len);
+    if (ret <= 0) {
+      ESP_LOGE(TAG, "Error reading data stream");
+      break;
+    }
+    read_len += ret;
+  }
+
+  ESP_LOGI(TAG, "HTTP GET completed with status code: %d", status_code);
+
+  esp_http_client_close(client);
+  esp_http_client_cleanup(client);
+
+  return response_buffer;
 }
