@@ -3938,8 +3938,7 @@ CONFIG_LV_FS_DEFAULT_DRIVER_LETTER=0
 # CONFIG_LV_USE_FS_UEFI is not set
 # default:
 # CONFIG_LV_USE_FS_FROGFS is not set
-# default:
-# CONFIG_LV_USE_LODEPNG is not set
+CONFIG_LV_USE_LODEPNG=y
 # default:
 # CONFIG_LV_USE_LIBPNG is not set
 # default:

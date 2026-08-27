@@ -14,6 +14,12 @@ export WIFI_PASSWORD="home-wifi-password"
 export WEATHER_API_KEY="apikey"
 ```
 
+Enable PNG decoder in `lv_conf.h`. This is required to show a downloaded image in the screen.
+
+```c
+#define LV_USE_LODEPNG 1
+```
+
 # Pin Connection Reference
 
 ## Overview
