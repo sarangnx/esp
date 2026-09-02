@@ -10,6 +10,7 @@
 #include "misc/lv_area.h"
 #include "widgets/image/lv_image.h"
 
+#include <chrono>
 #include <iomanip>
 #include <stdlib.h>
 #include <string>
@@ -59,24 +60,14 @@ void ClockScreen::loadClockData() {
   JsonDocument doc;
   deserializeJson(doc, response);
 
-  std::string name = doc["location"]["name"];
-  std::string region = doc["location"]["region"];
-
   float temp = doc["current"]["temp_c"].as<float>();
   std::ostringstream temperature_stream;
   temperature_stream << std::fixed << std::setprecision(1) << temp;
   std::string temperature = temperature_stream.str();
 
-  std::string condition = doc["current"]["condition"]["text"];
   std::string icon_url = "https:" + std::string(doc["current"]["condition"]["icon"]);
 
-  ESP_LOGI(TAG,
-           "Weather data loaded: %s, %s, %s, %s, %s",
-           name.c_str(),
-           region.c_str(),
-           temperature.c_str(),
-           condition.c_str(),
-           icon_url.c_str());
+  ESP_LOGI(TAG, "Weather data loaded: %s, %s", temperature.c_str(), icon_url.c_str());
 
   int icon_size = 0;
   uint8_t* icon_data = http_client.getBuffered(icon_url, &icon_size);
@@ -100,18 +91,20 @@ void ClockScreen::loadClockData() {
 
   lv_obj_delete(loading_label);
 
-  temperature_label = lv_label_create(clock_screen);
-  lv_obj_align(temperature_label, LV_ALIGN_TOP_LEFT, lv_pct(5), lv_pct(5));
-  lv_obj_set_width(temperature_label, LV_SIZE_CONTENT);
-  lv_obj_set_style_text_font(temperature_label, &lv_font_montserrat_24, 0);
-  lv_obj_set_style_text_color(temperature_label, lv_color_make(0, 0, 0), 0);
-  lv_label_set_text(temperature_label, temperature.c_str());
+  if (!temperature.empty()) {
+    temperature_label = lv_label_create(clock_screen);
+    lv_obj_align(temperature_label, LV_ALIGN_TOP_LEFT, lv_pct(5), lv_pct(5));
+    lv_obj_set_width(temperature_label, LV_SIZE_CONTENT);
+    lv_obj_set_style_text_font(temperature_label, &lv_font_montserrat_20, 0);
+    lv_obj_set_style_text_color(temperature_label, lv_color_make(255, 255, 255), 0);
+    lv_label_set_text(temperature_label, temperature.c_str());
 
-  degree_label = lv_label_create(clock_screen);
-  lv_obj_align_to(degree_label, temperature_label, LV_ALIGN_OUT_RIGHT_TOP, 0, 0);
-  lv_obj_set_style_text_font(degree_label, &lv_font_montserrat_10, 0);
-  lv_obj_set_style_text_color(degree_label, lv_color_make(0, 0, 0), 0);
-  lv_label_set_text(degree_label, "°C");
+    degree_label = lv_label_create(clock_screen);
+    lv_obj_align_to(degree_label, temperature_label, LV_ALIGN_OUT_RIGHT_TOP, 0, 0);
+    lv_obj_set_style_text_font(degree_label, &lv_font_montserrat_10, 0);
+    lv_obj_set_style_text_color(degree_label, lv_color_make(255, 255, 255), 0);
+    lv_label_set_text(degree_label, "°C");
+  }
 
   if (img_dsc != NULL) {
     icon = lv_image_create(clock_screen);
@@ -122,28 +115,31 @@ void ClockScreen::loadClockData() {
 
     ESP_LOGI(TAG, "icon dimensions %d x %d", lv_obj_get_width(icon), lv_obj_get_height(icon));
 
-    lv_obj_set_size(icon, 30, 30);
+    lv_obj_set_size(icon, 24, 24);
     lv_image_set_inner_align(icon, LV_IMAGE_ALIGN_CONTAIN);
 
     lv_obj_align(icon, LV_ALIGN_TOP_RIGHT, lv_pct(-5), lv_pct(5));
   }
 
-  condition_label = lv_label_create(clock_screen);
-  lv_obj_align(condition_label, LV_ALIGN_TOP_LEFT, lv_pct(5), lv_pct(20));
-  lv_obj_set_style_text_font(condition_label, &lv_font_montserrat_14, 0);
-  lv_obj_set_style_text_color(condition_label, lv_color_make(0, 0, 0), 0);
-  lv_obj_set_width(condition_label, lv_pct(90));
-  lv_label_set_long_mode(condition_label, LV_LABEL_LONG_WRAP);
-  lv_label_set_text(condition_label, condition.c_str());
+  time_label = lv_label_create(clock_screen);
+  lv_obj_align(time_label, LV_ALIGN_CENTER, 0, 0);
+  lv_obj_set_style_text_font(time_label, &lv_font_montserrat_24, 0);
+  lv_obj_set_style_text_color(time_label, lv_color_make(255, 255, 255), 0);
+  lv_label_set_text(time_label, "");
 
-  location_label = lv_label_create(clock_screen);
-  lv_obj_align(location_label, LV_ALIGN_BOTTOM_LEFT, lv_pct(5), lv_pct(-5));
-  lv_obj_set_style_text_font(location_label, &lv_font_montserrat_14, 0);
-  lv_obj_set_style_text_color(location_label, lv_color_make(255, 255, 255), 0);
-  lv_obj_set_width(location_label, lv_pct(90));
-  lv_obj_set_height(location_label, LV_SIZE_CONTENT);
-  lv_label_set_long_mode(location_label, LV_LABEL_LONG_WRAP);
-  lv_label_set_text(location_label, (name + ", " + region).c_str());
+  lv_timer_create(updateTime, 1000, this);
 
   lvgl_port_unlock();
+}
+
+void ClockScreen::updateTime(lv_timer_t* timer) {
+  ClockScreen* self = static_cast<ClockScreen*>(lv_timer_get_user_data(timer));
+
+  auto now = std::chrono::system_clock::now();
+  std::chrono::zoned_time local{"Asia/Kolkata", now};
+  auto now_seconds = std::chrono::floor<std::chrono::seconds>(local.get_local_time());
+
+  std::string time_str = std::format("{:%I:%M %p}", now_seconds);
+
+  lv_label_set_text(self->time_label, time_str.c_str());
 }

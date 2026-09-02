@@ -57,7 +57,7 @@ extern "C" void app_main(void) {
 
   ClockScreen clock_screen;
   lv_screen_load_anim(clock_screen.create(), LV_SCR_LOAD_ANIM_FADE_ON, 500, 0, false);
-  // clock_screen.loadClockData();
+  clock_screen.loadClockData();
 
   while (1) {
     vTaskDelay(pdMS_TO_TICKS(200));

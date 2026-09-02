@@ -14,7 +14,9 @@ class ClockScreen {
   lv_obj_t* icon = nullptr;
   lv_obj_t* condition_label = nullptr;
   lv_obj_t* location_label = nullptr;
+  lv_obj_t* time_label = nullptr;
 
   lv_obj_t* create();
   void loadClockData();
+  static void updateTime(lv_timer_t* timer);
 };
