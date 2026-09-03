@@ -36,8 +36,8 @@ lv_obj_t* ClockScreen::create() {
   lv_obj_align(loading_label, LV_ALIGN_TOP_LEFT, lv_pct(5), lv_pct(5));
   lv_obj_set_width(loading_label, lv_pct(90));
   lv_obj_set_height(loading_label, LV_SIZE_CONTENT);
-  lv_obj_set_style_text_font(loading_label, &lv_font_montserrat_16, 0);
-  lv_obj_set_style_text_color(loading_label, lv_color_make(0, 0, 0), 0);
+  lv_obj_set_style_text_font(loading_label, &roboto_mono_16, 0);
+  lv_obj_set_style_text_color(loading_label, lv_color_make(255, 255, 255), 0);
 
   lv_label_set_long_mode(loading_label, LV_LABEL_LONG_WRAP);
 
@@ -95,13 +95,13 @@ void ClockScreen::loadClockData() {
     temperature_label = lv_label_create(clock_screen);
     lv_obj_align(temperature_label, LV_ALIGN_TOP_LEFT, lv_pct(5), lv_pct(5));
     lv_obj_set_width(temperature_label, LV_SIZE_CONTENT);
-    lv_obj_set_style_text_font(temperature_label, &lv_font_montserrat_20, 0);
+    lv_obj_set_style_text_font(temperature_label, &roboto_mono_20, 0);
     lv_obj_set_style_text_color(temperature_label, lv_color_make(255, 255, 255), 0);
     lv_label_set_text(temperature_label, temperature.c_str());
 
     degree_label = lv_label_create(clock_screen);
     lv_obj_align_to(degree_label, temperature_label, LV_ALIGN_OUT_RIGHT_TOP, 0, 0);
-    lv_obj_set_style_text_font(degree_label, &lv_font_montserrat_10, 0);
+    lv_obj_set_style_text_font(degree_label, &roboto_mono_12, 0);
     lv_obj_set_style_text_color(degree_label, lv_color_make(255, 255, 255), 0);
     lv_label_set_text(degree_label, "°C");
   }
@@ -123,7 +123,8 @@ void ClockScreen::loadClockData() {
 
   time_label = lv_label_create(clock_screen);
   lv_obj_align(time_label, LV_ALIGN_CENTER, 0, 0);
-  lv_obj_set_style_text_font(time_label, &lv_font_montserrat_24, 0);
+  lv_obj_set_style_text_font(time_label, &roboto_mono_18, 0);
+  lv_obj_set_style_text_letter_space(time_label, -2, 0);
   lv_obj_set_style_text_color(time_label, lv_color_make(255, 255, 255), 0);
   lv_label_set_text(time_label, "");
 
@@ -139,7 +140,7 @@ void ClockScreen::updateTime(lv_timer_t* timer) {
   std::chrono::zoned_time local{"Asia/Kolkata", now};
   auto now_seconds = std::chrono::floor<std::chrono::seconds>(local.get_local_time());
 
-  std::string time_str = std::format("{:%I:%M %p}", now_seconds);
+  std::string time_str = std::format("{:%I:%M:%S %p}", now_seconds);
 
   lv_label_set_text(self->time_label, time_str.c_str());
 }

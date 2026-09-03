@@ -9,7 +9,6 @@ idf_component_register(
     "screens/loading.cpp"
     "screens/clock.cpp"
   INCLUDE_DIRS "."
-  EMBED_TXTFILES "certs/weatherapi.pem"
   REQUIRES
     freertos
     driver
