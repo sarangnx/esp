@@ -13,6 +13,9 @@
 
 #include <string>
 
+std::string checkmark = "#7cb342 ✅#";
+std::string crossmark = "#d32f2f ❎#";
+
 extern "C" void app_main(void) {
   static constexpr const char* TAG = "MAIN";
 
@@ -31,25 +34,31 @@ extern "C" void app_main(void) {
   LoadingScreen loading_screen;
   lv_screen_load_anim(loading_screen.create(), LV_SCR_LOAD_ANIM_FADE_ON, 500, 0, false);
 
-  loading_screen.setText(new std::string("Initializing keypad..."));
+  loading_screen.setText(new std::string("Display Initialized " + checkmark));
+  loading_screen.appendText(new std::string("\nInitializing keypad..."));
 
   Mpr121Keypad keypad;
   keypad.init();
 
-  loading_screen.setText(new std::string("Registering keypad..."));
+  loading_screen.appendText(new std::string("\nKeypad Initialized " + checkmark));
+  loading_screen.appendText(new std::string("\nRegistering keypad..."));
 
   tft_display.registerKeypad(&keypad);
 
-  loading_screen.setText(new std::string("Connecting to WiFi..."));
+  loading_screen.appendText(new std::string("\nKeypad Registered " + checkmark));
+
+  loading_screen.appendText(new std::string("\nConnecting to WiFi..."));
 
   if (EspWifi::init()) {
     ESP_LOGI(TAG, "✅  Connected to WiFi!");
-    loading_screen.setText(new std::string("Connected to WiFi."));
+    loading_screen.appendText(new std::string("\nConnected to WiFi " + checkmark));
     // Your application logic here — HTTP requests, MQTT, etc.
   } else {
     ESP_LOGE(TAG, "❌  Could not connect to WiFi.");
-    loading_screen.setText(new std::string("Failed to connect to WiFi."));
+    loading_screen.appendText(new std::string("\nFailed to connect to WiFi " + crossmark));
   }
+
+  loading_screen.appendText(new std::string("\nLoading screen..."));
 
   vTaskDelay(pdMS_TO_TICKS(1000));
 

@@ -12,4 +12,5 @@ class LoadingScreen {
 
   lv_obj_t* create();
   void setText(std::string* text);
+  void appendText(std::string* text);
 };
