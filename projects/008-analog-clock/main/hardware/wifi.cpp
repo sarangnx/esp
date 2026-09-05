@@ -109,6 +109,9 @@ void EspWifi::wifi_event_handler(void* arg,
     esp_sntp_setservername(0, "pool.ntp.org");
     esp_sntp_init();
 
+    setenv("TZ", "IST-5:30", 1);
+    tzset();
+
     time_t now = 0;
     struct tm timeinfo = {};
     int retry = 0;
