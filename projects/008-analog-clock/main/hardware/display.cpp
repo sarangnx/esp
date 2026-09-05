@@ -45,8 +45,8 @@ void TftDisplay::init(void) {
   bl_gpio_config.pin_bit_mask = 1ULL << TFT_BL_PIN;
 
   // lvgl display configuration
-  disp_cfg.buffer_size = TFT_WIDTH * TFT_HEIGHT / 4;
-  disp_cfg.double_buffer = true;
+  disp_cfg.buffer_size = TFT_WIDTH * TFT_HEIGHT;
+  disp_cfg.double_buffer = false;
   disp_cfg.hres = TFT_WIDTH;
   disp_cfg.vres = TFT_HEIGHT;
   disp_cfg.monochrome = false;
