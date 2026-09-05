@@ -2,9 +2,8 @@
 
 #include "esp_log.h"
 
-#include <chrono>
+#include <ctime>
 #include <stdlib.h>
-#include <string>
 
 lv_obj_t* ClockScreen::create() {
   lvgl_port_lock(0);
@@ -113,21 +112,20 @@ void ClockScreen::loadClockData() {
 void ClockScreen::updateTime(lv_timer_t* timer) {
   ClockScreen* self = static_cast<ClockScreen*>(lv_timer_get_user_data(timer));
 
-  auto now = std::chrono::system_clock::now();
-  std::chrono::zoned_time local{"Asia/Kolkata", now};
-  auto local_time = local.get_local_time();
-  auto now_seconds = std::chrono::floor<std::chrono::seconds>(local_time);
+  time_t now;
+  struct tm timeinfo;
+  time(&now);
+  localtime_r(&now, &timeinfo);
 
-  std::string time_str = std::format("{:%I:%M:%S %p}", now_seconds);
+  char time_str[16];
+  strftime(time_str, sizeof(time_str), "%I:%M:%S %p", &timeinfo);
+  lv_label_set_text(self->time_label, time_str);
 
-  lv_label_set_text(self->time_label, time_str.c_str());
+  int hours = timeinfo.tm_hour;
+  int minutes = timeinfo.tm_min;
+  int seconds = timeinfo.tm_sec;
 
-  auto today = std::chrono::floor<std::chrono::days>(local_time);
-  std::chrono::hh_mm_ss time{std::chrono::floor<std::chrono::seconds>(local_time - today)};
-
-  int hours = time.hours().count();
-  int minutes = time.minutes().count();
-  int seconds = time.seconds().count();
+  lv_label_set_text(self->time_label, time_str);
 
   // Angles for the clock hands
   // 360° ÷ 60 sec
