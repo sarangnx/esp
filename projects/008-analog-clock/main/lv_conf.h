@@ -691,7 +691,7 @@
  *  #define LV_FONT_CUSTOM_DECLARE   LV_FONT_DECLARE(my_font_1) LV_FONT_DECLARE(my_font_2)
  *  @endcode
  */
-#define LV_FONT_CUSTOM_DECLARE LV_FONT_DECLARE(roboto_mono_10) \
+#define LV_FONT_CUSTOM_DECLARE LV_FONT_DECLARE(roboto_mono_bold_10) \
   LV_FONT_DECLARE(roboto_mono_12) \
   LV_FONT_DECLARE(roboto_mono_14) \
   LV_FONT_DECLARE(roboto_mono_16) \

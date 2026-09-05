@@ -60,7 +60,7 @@ void ClockScreen::loadClockData() {
   lv_obj_add_style(hour_hand, &hour_hand_style, 0);
   // set coordinates
   hour_points[0] = {64, 80};
-  hour_points[1] = {40, 80};
+  hour_points[1] = {34, 80};
   lv_line_set_points(hour_hand, hour_points, 2);
 
   //
@@ -75,7 +75,7 @@ void ClockScreen::loadClockData() {
   lv_obj_add_style(minute_hand, &minute_hand_style, 0);
   // set coordinates
   minute_points[0] = {64, 80};
-  minute_points[1] = {30, 80};
+  minute_points[1] = {24, 80};
   lv_line_set_points(minute_hand, minute_points, 2);
 
   //
@@ -90,7 +90,7 @@ void ClockScreen::loadClockData() {
   lv_obj_add_style(second_hand, &second_hand_style, 0);
   // set coordinates
   second_points[0] = {64, 80};
-  second_points[1] = {20, 80};
+  second_points[1] = {14, 80};
   lv_line_set_points(second_hand, second_points, 2);
 
   // center point of clock
@@ -102,6 +102,35 @@ void ClockScreen::loadClockData() {
   lv_obj_set_style_bg_opa(clock_center, LV_OPA_100, 0);
   lv_obj_set_style_border_width(clock_center, 2, 0);
   lv_obj_set_style_border_color(clock_center, lv_color_hex(0xFFFFFF), 0);
+
+  // clock numbers
+  clock_numbers = lv_scale_create(clock_screen);
+  lv_obj_set_size(clock_numbers, 90, 90);
+  lv_scale_set_mode(clock_numbers, LV_SCALE_MODE_ROUND_INNER);
+  lv_obj_set_align(clock_numbers, LV_ALIGN_CENTER);
+  lv_scale_set_rotation(clock_numbers, 300);
+
+  lv_obj_set_style_arc_color(clock_numbers, lv_color_hex(0xffffff), LV_PART_MAIN);
+  lv_obj_set_style_line_color(clock_numbers, lv_color_hex(0xffffff), LV_PART_ITEMS);
+  lv_obj_set_style_length(clock_numbers, 2, LV_PART_ITEMS);
+
+  lv_obj_set_style_line_color(clock_numbers, lv_color_hex(0xffffff), LV_PART_INDICATOR);
+  lv_obj_set_style_line_rounded(clock_numbers, true, LV_PART_INDICATOR);
+  lv_obj_set_style_length(clock_numbers, 4, LV_PART_INDICATOR);
+
+  lv_obj_set_style_text_color(clock_numbers, lv_color_hex(0xffffff), LV_PART_INDICATOR);
+  lv_obj_set_style_text_font(clock_numbers, &roboto_mono_bold_10, LV_PART_INDICATOR);
+  lv_obj_set_style_pad_radial(clock_numbers, -6, LV_PART_INDICATOR);
+
+  lv_scale_set_range(clock_numbers, 0, 12);
+  static const char* custom_labels[] = {
+      "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", NULL};
+  lv_scale_set_text_src(clock_numbers, custom_labels);
+
+  lv_scale_set_total_tick_count(clock_numbers, 61);
+  lv_scale_set_major_tick_every(clock_numbers, 5);
+  lv_scale_set_angle_range(clock_numbers, 360);
+  lv_scale_set_label_show(clock_numbers, true);
 
   // create timer to update time every second
   lv_timer_create(updateTime, 1000, this);
@@ -144,8 +173,8 @@ void ClockScreen::updateTime(lv_timer_t* timer) {
            seconds_angle);
 
   // sin and cos returns a sclaed up value, divide by 32768 to scale down
-  int sx = 64 + ((44 * lv_trigo_cos(seconds_angle)) / 32768);
-  int sy = 80 + ((44 * lv_trigo_sin(seconds_angle)) / 32768);
+  int sx = 64 + ((34 * lv_trigo_cos(seconds_angle)) / 32768);
+  int sy = 80 + ((34 * lv_trigo_sin(seconds_angle)) / 32768);
 
   self->second_points[1] = {sx, sy};
   lv_line_set_points(self->second_hand, self->second_points, 2);
@@ -154,15 +183,15 @@ void ClockScreen::updateTime(lv_timer_t* timer) {
   static int last_minute = -1;
 
   if (minutes != last_minute) {
-    int mx = 64 + ((34 * lv_trigo_cos(minutes_angle)) / 32768);
-    int my = 80 + ((34 * lv_trigo_sin(minutes_angle)) / 32768);
+    int mx = 64 + ((24 * lv_trigo_cos(minutes_angle)) / 32768);
+    int my = 80 + ((24 * lv_trigo_sin(minutes_angle)) / 32768);
 
     self->minute_points[1] = {mx, my};
     lv_line_set_points(self->minute_hand, self->minute_points, 2);
     ESP_LOGI("TIMER", "mx: %d, my: %d", mx, my);
 
-    int hx = 64 + ((24 * lv_trigo_cos(hours_angle)) / 32768);
-    int hy = 80 + ((24 * lv_trigo_sin(hours_angle)) / 32768);
+    int hx = 64 + ((14 * lv_trigo_cos(hours_angle)) / 32768);
+    int hy = 80 + ((14 * lv_trigo_sin(hours_angle)) / 32768);
 
     self->hour_points[1] = {hx, hy};
     lv_line_set_points(self->hour_hand, self->hour_points, 2);

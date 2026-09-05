@@ -12,6 +12,8 @@ class ClockScreen {
   lv_obj_t* time_label = nullptr;
 
   lv_obj_t* clock_center = nullptr;
+  lv_obj_t* clock_numbers = nullptr;
+
   lv_obj_t* hour_hand = nullptr;
   lv_obj_t* minute_hand = nullptr;
   lv_obj_t* second_hand = nullptr;
