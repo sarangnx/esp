@@ -2,7 +2,6 @@
 
 #include "core/lv_group.h"
 #include "driver/gpio.h"
-// #include "esp_lcd_panel_ops.h"
 #include "esp_lcd_st7735.h"
 #include "esp_log.h"
 #include "esp_lvgl_port.h"

@@ -3,9 +3,6 @@
 #include "driver/gpio.h"
 #include "driver/i2c_master.h"
 #include "esp_log.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/queue.h"
-#include "freertos/task.h"
 #include "pin_config.h"
 
 void IRAM_ATTR Mpr121Keypad::mpr121_isr_handler(void* arg) {

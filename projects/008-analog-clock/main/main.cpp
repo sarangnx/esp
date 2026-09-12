@@ -3,13 +3,13 @@
 
 // free rtos should be included before esp headers to avoid compilation errors
 
+#include "display.h"
 #include "esp_log.h"
-#include "hardware/display.h"
-#include "hardware/init.h"
-#include "hardware/keypad.h"
-#include "hardware/wifi.h"
+#include "init.h"
+#include "keypad.h"
 #include "screens/clock.h"
 #include "screens/loading.h"
+#include "wifi.h"
 
 #include <string>
 
