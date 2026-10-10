@@ -4,6 +4,7 @@ idf_component_register(
     "wifi.cpp"
     "display.cpp"
     "keypad.cpp"
+    "tactile_keypad.cpp"
   INCLUDE_DIRS "."
   REQUIRES
     waveshare__esp_lcd_st7735

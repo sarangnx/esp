@@ -71,4 +71,10 @@
 
 #define MAX_RETRY 5  // retries before giving up wifi connection
 
+// PCF8574 Pins
+#define PCF_SDA_PIN GPIO_NUM_7
+#define PCF_SCL_PIN GPIO_NUM_5
+#define PCF_INT_PIN GPIO_NUM_3
+#define PCF8574_ADDR 0x20  // Default I2C address for PCF8574
+
 #endif  // PIN_CONFIG_H
