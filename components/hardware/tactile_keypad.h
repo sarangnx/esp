@@ -28,7 +28,6 @@ class Pcf8574Keypad {
 
   public:
   int touched_key = -1;
-  bool key_pressed = false;
 
   void init(void);
 
@@ -41,4 +40,6 @@ class Pcf8574Keypad {
    * Read the PCF8574 port. This tells us which pins changed
    */
   esp_err_t read(uint8_t& pin);
+
+  bool getKeyEvent(int& key_out);
 };

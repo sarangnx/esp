@@ -28,6 +28,13 @@ void Pcf8574Keypad::pcf8574_task(void* arg) {
   vTaskDelete(NULL);
 }
 
+static const uint32_t KEY_CODE_MAP[4][4] = {
+    {0, 4, 8, 12},
+    {1, 5, 9, 13},
+    {2, 6, 10, 14},
+    {3, 7, 11, 15},
+};
+
 /**
  * Main Task Loop (Non-static: Direct access to all class members!)
  */
@@ -67,6 +74,7 @@ void Pcf8574Keypad::runTaskLoop() {
             uint8_t col_check = (check >> 4) & 0x0F;
             if (!(col_check & (1 << col))) {
               ESP_LOGI(TAG, "Key: row=%d col=%d", row, col);
+              touched_key = KEY_CODE_MAP[row][col];
             }
           }
 
@@ -133,4 +141,14 @@ esp_err_t Pcf8574Keypad::write(uint8_t val) {
  */
 esp_err_t Pcf8574Keypad::read(uint8_t& pin) {
   return i2c_master_receive(pcf8574_handle, &pin, 1, 100);
+}
+
+bool Pcf8574Keypad::getKeyEvent(int& key_out) {
+  if (touched_key >= 0) {
+    key_out = touched_key;
+    touched_key = -1;
+    return true;
+  }
+
+  return false;
 }

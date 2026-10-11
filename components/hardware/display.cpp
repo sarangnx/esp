@@ -106,6 +106,21 @@ void TftDisplay::registerKeypad(Mpr121Keypad* keypad) {
   }
 }
 
+void TftDisplay::registerKeypad(Pcf8574Keypad* keypad) {
+  if (lvgl_port_lock(0)) {
+    keypad_indev = lv_indev_create();
+    lv_indev_set_type(keypad_indev, LV_INDEV_TYPE_KEYPAD);
+    lv_indev_set_read_cb(keypad_indev, pcf_keypad_read_cb);
+    lv_indev_set_user_data(keypad_indev, keypad);
+
+    lv_group_t* g = lv_group_create();
+    lv_group_set_default(g);
+    lv_indev_set_group(keypad_indev, g);
+
+    lvgl_port_unlock();
+  }
+}
+
 static const uint32_t KEY_MAP[12] = {'0',
                                      LV_KEY_RIGHT,
                                      '0',
@@ -121,6 +136,17 @@ static const uint32_t KEY_MAP[12] = {'0',
 
 void TftDisplay::keypad_read_cb(lv_indev_t* indev, lv_indev_data_t* data) {
   auto* keypad = static_cast<Mpr121Keypad*>(lv_indev_get_user_data(indev));
+  int key;
+  if (keypad->getKeyEvent(key) && key < 12) {
+    data->key = KEY_MAP[key];
+    data->state = LV_INDEV_STATE_PRESSED;
+  } else {
+    data->state = LV_INDEV_STATE_RELEASED;
+  }
+}
+
+void TftDisplay::pcf_keypad_read_cb(lv_indev_t* indev, lv_indev_data_t* data) {
+  auto* keypad = static_cast<Pcf8574Keypad*>(lv_indev_get_user_data(indev));
   int key;
   if (keypad->getKeyEvent(key) && key < 12) {
     data->key = KEY_MAP[key];
